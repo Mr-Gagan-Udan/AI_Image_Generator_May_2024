@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { v2 as cloudinary } from 'cloudinary'
 import ImageModel from '../Schema/imageSchema.js';
 import 'dotenv/config';
+import SecretKeyModel from '../Schema/secretKeysSchema.js';
 
 const openAi = new OpenAI({
     apiKey: process.env.OPEN_AI_API_KEY,
@@ -41,18 +42,65 @@ const uploadToMongoDB = ({image, searchText, cloudinaryRes, userId}) => {
     }
 }
 
+const useSecretKeyForQuery = async (secret) => {
+    await SecretKeyModel.findByIdAndUpdate(secret._id, {
+        remainingCounts: secret.remainingCounts - 1,
+    });
+}
+
+export const verifySecretKey = async (req, res) => {
+    const [secret] = await SecretKeyModel.find({secretKey: req.body.secretKey});
+    if(!secret){
+        res.status(401).json({
+            status: 'fail',
+            message: {
+                title: 'Invalid secret key',
+                text: 'Please contact admin to get a new secret key',
+            }
+        });
+    }
+    else if(secret.remainingCounts<=0){
+        res.status(401).json({
+            status: 'fail',
+            message: {
+                title: 'Secret key usage limit exceeded',
+                text: 'Please contact admin to get a new secret key',
+            }
+        });
+    }
+    else{
+        res.status(200).json({
+            status: 'success',
+            data:{
+                allowedCounts: secret.allowedCounts,
+                remainingCounts: secret.remainingCounts,
+            }
+        });
+        return secret;
+    }
+    return null;
+}
+
 export const getImageForQuery = async (req, res) => {
     try{
         console.log(req.body);
-        const {searchText, size, userId, secretKey} = req.body;
+        const {searchText, size, userId, userSecretKey, frontendSecretKey} = req.body;
 
-        if(secretKey!=process.env.BACKEND_CONNECTIONS_SECRET_KEY){
+        const [secret] = await SecretKeyModel.find({secretKey: userSecretKey});
+
+        console.log("\n✅ : secret:", secret)
+
+
+        if(!secret || secret.remainingCounts<=0 || frontendSecretKey!=process.env.BACKEND_CONNECTIONS_SECRET_KEY){
             return res.status(401).json({
                 status: 'fail',
-                message: 'Unauthorized request!'
+                message: {
+                    title: 'Unauthorized request !',
+                    text: 'Secret key is not valid !',
+                },
             })
         }
-    
+
         const data = await openAi.images.generate({
             model: "dall-e-2",
             prompt: searchText,
@@ -63,9 +111,8 @@ export const getImageForQuery = async (req, res) => {
         const image = data.data[0].url;
 
         const cloudinaryRes = await uploadToCloudinary(image);
-        uploadToMongoDB({
-            image, searchText, cloudinaryRes, userId
-        });
+        uploadToMongoDB({image, searchText, cloudinaryRes, userId});
+        useSecretKeyForQuery(secret);
     
         res.status(200).json({
             status: 'success',

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const blogSchema = new Schema({
+const imageSchema = new Schema({
     promptText: String,
     originalUrl: String,
     cloudinaryUrl: String,
@@ -19,6 +19,6 @@ const blogSchema = new Schema({
     }
   });
 
-  const ImageModel = mongoose.model('dall-e-p1', blogSchema);
+  const ImageModel = mongoose.model('dall-e-p1', imageSchema);
 
   export default ImageModel;

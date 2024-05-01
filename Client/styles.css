@@ -9,6 +9,16 @@ body{
     color: #ffffffe4;
 }
 
+.btn-disabled{
+    background-color: grey !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+}
+
+input:disabled{
+    cursor: not-allowed !important;
+}
+
 .navbar{
     display: flex;
     gap: 100px;
@@ -45,7 +55,9 @@ body{
 .search-container{
     margin: auto;
     width: fit-content;
-    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    height: 80px;
 
     input{
         height: 48px;
@@ -59,11 +71,11 @@ body{
     }
 
     button{
-        height: 48px;
+        height: 49px;
         border-top-right-radius: 24px;
         border-bottom-right-radius: 24px;
-        padding: 4px 24px;
-        font-size: 24px;
+        padding: 10px 12px;
+        font-size: 30px;
         outline: none;
         border: none;
         opacity: 0.9;
@@ -126,4 +138,47 @@ body{
     p{
         font-size: 12px;
     }
+}
+
+
+
+.search-secret-key-container{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    button{
+        outline: none;
+        border: none;
+        height: 35px;
+        font-size: 20px;
+        padding: 0 8px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        cursor: pointer;
+        color: #4280C7;
+    }
+}
+
+.search-secret-key{
+    padding: 8px 12px;
+    width: 200px;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    display: block;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    &::placeholder{
+        color: #4280C7;
+    }
+}
+
+.remaining-counts{
+    margin: auto;
+    width: fit-content;
+    color: rgb(105, 137, 165);
+    letter-spacing: 1px;
 }
