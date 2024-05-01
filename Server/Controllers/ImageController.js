@@ -44,7 +44,14 @@ const uploadToMongoDB = ({image, searchText, cloudinaryRes, userId}) => {
 export const getImageForQuery = async (req, res) => {
     try{
         console.log(req.body);
-        const {searchText, size, userId} = req.body;
+        const {searchText, size, userId, secretKey} = req.body;
+
+        if(secretKey!=process.env.BACKEND_CONNECTIONS_SECRET_KEY){
+            return res.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized request!'
+            })
+        }
     
         const data = await openAi.images.generate({
             model: "dall-e-2",

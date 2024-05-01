@@ -1,10 +1,9 @@
 import { useState } from "react";
-
-const DEFAULT_IMAGE_URL = "https://img.freepik.com/free-psd/3d-rendering-ui-icon_23-2149182289.jpg?size=626&ext=jpg&ga=GA1.1.482985772.1714508851&semt=sph";
+import 'dotenv/config';
 
 const ImageGenerator = () => {
     const [searchText, setSearchText] = useState('');
-    const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
+    const [imageUrl, setImageUrl] = useState(process.env.DEFAULT_IMAGE_URL);
     const [loading, setLoading] = useState(false);
 
     const textChanged = (e) => {
@@ -35,16 +34,17 @@ const ImageGenerator = () => {
     const getNewImage = async() => {
         try{
             setLoading(true);
-            const res = await fetch('http://localhost:1400/api/v1/images', {
+            const res = await fetch(`${process.env.BACKEND_URL}/api/v1/images`, {
                 method: "POST",
                 body: JSON.stringify({
                 userId: "default-1",
                 searchText: searchText,
+                secretKey: process.env.BACKEND_CONNECTIONS_SECRET_KEY,
                 size: '256x256'
                 }),
                 headers: {
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 }
             });
             const data = await res.json();
@@ -77,7 +77,7 @@ const ImageGenerator = () => {
                 <button onClick={getNewImage}>Generate</button> 
             </div>
             {
-                imageUrl !== DEFAULT_IMAGE_URL &&
+                imageUrl !== process.env.DEFAULT_IMAGE_URL &&
                 <button class='download-btn' onClick={()=>downloadImage()}>Download</button>
             }
         </div>
