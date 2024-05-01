@@ -134,7 +134,9 @@ export const getImageForQuery = async (req, res) => {
 }
 
 export const getImageHistory = async (req, res) => {
-    const searches = await ImageModel.find({userId: req.query.userId});
+    const searches = await ImageModel
+                            .find({userId: req.query.userId})
+                            .sort('-createdAt');
     res.status(200).json({
         status: 'success',
         data:{
