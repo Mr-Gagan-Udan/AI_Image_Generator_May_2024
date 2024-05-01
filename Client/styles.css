@@ -1,0 +1,129 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #212121;
+    color: #ffffffe4;
+}
+
+.navbar{
+    display: flex;
+    gap: 100px;
+    padding: 16px 48px;
+    background-color: black;
+    box-shadow: rgba(108, 108, 108, 0.25) 0px 5px 10px, rgba(92, 79, 79, 0.22) 0px 2px 2px;
+
+    > a {
+        font-size: 20px;
+    }
+}
+
+.image-generator-container{
+    padding: 48px;
+
+    >h1{
+        margin: auto;
+        width: fit-content;
+    }
+}
+
+.img-container{
+    width: fit-content;
+    margin: auto;
+
+    >img{
+        width: 360px;
+        height: 360px;
+        margin: 24px auto 0;
+        display: block;
+    }
+}
+
+.search-container{
+    margin: auto;
+    width: fit-content;
+    margin-top: 24px;
+
+    input{
+        height: 48px;
+        width: 300px;
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
+        padding: 12px 24px;
+        font-size: 24px;
+        outline: none;
+        border: none;
+    }
+
+    button{
+        height: 48px;
+        border-top-right-radius: 24px;
+        border-bottom-right-radius: 24px;
+        padding: 4px 24px;
+        font-size: 24px;
+        outline: none;
+        border: none;
+        opacity: 0.9;
+        background-color: #4280C7;
+        color: white;
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+    }
+
+    button:hover{
+        opacity: 1;
+    }
+}
+
+.loader{
+    background-color: #4280C7;
+    height: 4px;
+    width: 0px;
+}
+
+.loader-on{
+    width: 360px;
+    transition: width 15s cubic-bezier(0.12, 0.59, 0.04, 0.86);
+}
+
+.download-btn{
+    background-color: #fff;
+    color: #4280C7;
+    outline: none;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    margin: 24px auto;
+}
+
+.history-card-container{
+    padding: 48px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 48px;
+}
+
+.history-card{
+    /* border: 1px solid rgba(128, 128, 128, 0.507); */
+    padding: 24px 36px;
+    border-radius: 8px;
+    width: fit-content;
+    float: left;
+    text-align: center;
+    box-shadow: rgba(144, 149, 163, 0.486) 0px 0px 5px 0px, rgba(79, 87, 105, 0.461) 0px 0px 1px 0px;
+    
+    img{
+        margin:8px 0 5px;
+    }
+
+    p{
+        font-size: 12px;
+    }
+}
