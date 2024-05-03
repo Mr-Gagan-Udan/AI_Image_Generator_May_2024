@@ -88,9 +88,6 @@ export const getImageForQuery = async (req, res) => {
 
         const [secret] = await SecretKeyModel.find({secretKey: userSecretKey});
 
-        console.log("\n✅ : secret:", secret)
-
-
         if(!secret || secret.remainingCounts<=0 || frontendSecretKey!=process.env.BACKEND_CONNECTIONS_SECRET_KEY){
             return res.status(401).json({
                 status: 'fail',
@@ -101,14 +98,49 @@ export const getImageForQuery = async (req, res) => {
             })
         }
 
-        const data = await openAi.images.generate({
-            model: "dall-e-2",
-            prompt: searchText,
-            n: 1,
-            size: size,
+        // const data = await openAi.images.generate({
+        //     model: "dall-e-2",
+        //     prompt: searchText,
+        //     n: 1,
+        //     size: size,
+        // });
+        // const image = data.data[0].url;
+
+
+        // const deepAIResp = await fetch('https://api.deepai.org/api/text2img', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'api-key': 'YOUR_API_KEY'
+        //     },
+        //     body: JSON.stringify({
+        //         text: "YOUR_TEXT_URL",
+        //     })
+        // });
+        // const data = await deepAIResp.json();
+        // console.log("data:", data)
+
+        const imageRes = await fetch("https://api.hotpot.ai/art-maker-sdte-zmjbcrr", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+                "api-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTQ3Mzk3NzAsImV4cCI6MTcxNDgyNjE3MH0.0lUm-GRELcpj7jGU0brLwpI4gLWsVLYHHQBEpYAa7Ac",
+                "authorization": "hotpot-t2mJbCr8292aQzp8CnEPaK",
+                "content-type": "multipart/form-data; boundary=----WebKitFormBoundaryC0z7dOlgSmpbPXfW",
+                "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-site",
+                "Referer": "https://hotpot.ai/",
+                "Referrer-Policy": "strict-origin-when-cross-origin"
+            },
+            "body": `------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"seedValue\"\r\n\r\nnull\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"inputText\"\r\n\r\n${searchText}\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"width\"\r\n\r\n512\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"height\"\r\n\r\n512\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"styleId\"\r\n\r\n77\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"styleLabel\"\r\n\r\nConcept Art 3\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"isPrivate\"\r\n\r\nfalse\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"price\"\r\n\r\n0\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"requestId\"\r\n\r\n8-Tk8kcIoLsWipIvq\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW\r\nContent-Disposition: form-data; name=\"resultUrl\"\r\n\r\nhttps://hotpotmedia.s3.us-east-2.amazonaws.com/8-Tk8kcIoLsWipIvq.png\r\n------WebKitFormBoundaryC0z7dOlgSmpbPXfW--\r\n`,
+            "method": "POST"
         });
-    
-        const image = data.data[0].url;
+
+        const image = await imageRes.json();
 
         const cloudinaryRes = await uploadToCloudinary(image);
         uploadToMongoDB({image, searchText, cloudinaryRes, userId});
